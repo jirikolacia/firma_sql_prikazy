@@ -1,0 +1,29 @@
+// vyber vsechny zamestnance se jmenem/prijmenim ktere se podoba retezci, napr. "Jan%"
+SELECT z.jmeno, z.prijmeni, pr.nazev_kancelare, po.nazev_pozice, v.cista_mzda
+FROM pozice po, pracoviste pr, zamestnanci z, vyplatnice v
+WHERE z.jmeno LIKE "" AND z.pozice = po.id AND z.pracoviste = pr.id AND po.platid = v.id
+ORDER BY v.cista_mzda DESC;
+
+//vypis vsech pracovist pro konkretni budovu (podle budova.id)
+SELECT DISTINCT(poz.nazev_pozice)
+FROM pozice poz, zamestnanci zam, pracoviste prac
+WHERE poz.id = zam.pozice AND zam.pracoviste = prac.id and prac.bid = 12;
+
+//vypis vsech pracovist vcetne poctu vyskytu (podle budova.id)
+SELECT poz.nazev_pozice, COUNT(*) as vyskyt
+FROM pozice poz, zamestnanci zam, pracoviste prac
+WHERE poz.id = zam.pozice AND zam.pracoviste = prac.id and prac.bid = 12
+GROUP BY poz.nazev_pozice;
+
+//vypis nakladu na vsechny pozice v urcite budove (podle budova.id)
+SELECT poz.nazev_pozice,  CONCAT(SUM(v.hruba_mzda),',-') as naklady
+FROM pozice poz, zamestnanci zam, pracoviste prac, vyplatnice v
+WHERE poz.id = zam.pozice AND zam.pracoviste = prac.id AND v.id = poz.platid AND prac.bid = 12
+GROUP BY poz.nazev_pozice;
+
+//vypis nakladu na jednotlive budovy vcetne vypisu poctu zamestnancu
+SELECT sb.id, sb.budovy, FORMAT(SUM(v.hruba_mzda), 0) as naklady, COUNT(zam.id) as pocet_zamestnancu 
+FROM pozice poz, zamestnanci zam, pracoviste prac, vyplatnice v, seznam_budov sb 
+WHERE poz.platid = v.id AND sb.id = prac.bid AND prac.fid = 2 AND prac.id = zam.pracoviste AND zam.pozice=poz.id
+GROUP BY sb.budovy
+ORDER BY sb.id asc;

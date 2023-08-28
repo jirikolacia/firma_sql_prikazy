@@ -1,0 +1,5 @@
+// vyber vsechny zamestnance se jmenem/prijmenim ktere se podoba retezci, napr. "Jan%"
+SELECT z.jmeno, z.prijmeni, pr.nazev_kancelare, po.nazev_pozice, v.cista_mzda
+FROM pozice po, pracoviste pr, zamestnanci z, vyplatnice v
+WHERE z.jmeno LIKE "" AND z.pozice = po.id AND z.pracoviste = pr.id AND po.platid = v.id
+ORDER BY v.cista_mzda DESC;
